@@ -96,7 +96,7 @@ def reconstruct(measure: np.ndarray, sensing: np.ndarray, inverse_fourier: np.nd
     return y
 
 
-sampling_rate = 0.01
+sampling_rate = 0.05
 t = np.arange(-2, +2, sampling_rate)
 f = signal(t)
 
