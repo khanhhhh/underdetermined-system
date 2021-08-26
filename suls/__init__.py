@@ -41,7 +41,7 @@ def solve_l1(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     Given Ax=b
 
     Linear program
-    Minimize y
+    Minimize 1^T y (sum of all elements of y)
     Given y >= |x| and Ax=b
     """
     check_arguments(a, b)
