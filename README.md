@@ -32,7 +32,7 @@ Minimize ||Ax-b||_2^2 + ||x||_p^p
 Problem 3:
 Minimize 1^T y (sum of all elements of y)
 such that
-    y \geq |x|
+    y >= |x|
     Ax = b
 where y \in R^n
 ------------------------------------------------
