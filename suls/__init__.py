@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 import pulp
 import scipy as sp
@@ -46,19 +48,23 @@ def solve_l1(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     """
     check_arguments(a, b)
     m, n = a.shape
-
+    t1 = time.time()
     model = pulp.LpProblem(name="", sense=pulp.LpMinimize)
-    x = np.array([pulp.LpVariable(name=f"x_{i}", cat=pulp.LpContinuous) for i in range(n)])
-    y = np.array([pulp.LpVariable(name=f"y_{i}", cat=pulp.LpContinuous) for i in range(n)])
-    for i in range(n):
-        model.addConstraint(y[i] >= x[i])
-        model.addConstraint(y[i] >= -x[i])
+    x = np.array([pulp.LpVariable(name=f"x_{j}", cat=pulp.LpContinuous) for j in range(n)])
+    y = np.array([pulp.LpVariable(name=f"y_{j}", cat=pulp.LpContinuous) for j in range(n)])
+    for j in range(n):
+        model.addConstraint(y[j] >= x[j])
+        model.addConstraint(y[j] >= -x[j])
     for i in range(m):
-        model.addConstraint(pulp.lpSum(a[i, :] * x) == b[i])
+        model.addConstraint(pulp.LpAffineExpression({x[j]: a[i, j] for j in range(n)}) == b[i])
     model.setObjective(pulp.lpSum(y))
+    t2 = time.time()
     status = model.solve(pulp.COIN_CMD(msg=False, options=["barrier"]))
-
+    t3 = time.time()
     if status != pulp.LpStatusOptimal:
         raise RuntimeError(status)
+
+    print(f"model building... {t2-t1}s")
+    print(f"model solving.... {t3-t2}s")
 
     return np.array([v.value() for v in x])
