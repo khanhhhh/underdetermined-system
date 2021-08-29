@@ -23,25 +23,26 @@ def norm_p(x: np.ndarray, p: float = 2.0) -> float:
     return np.sum(np.abs(x) ** p) ** (1 / p)
 
 
-n = 2000
-m = 400
-A = np.random.random(size=(m, n)).astype(dtype=np.float64)
-b = np.random.random(size=(m)).astype(dtype=np.float64)
+if __name__ == "__main__":
+    n = 2000
+    m = 400
+    A = np.random.random(size=(m, n)).astype(dtype=np.float64)
+    b = np.random.random(size=(m)).astype(dtype=np.float64)
 
-fig, ax = plt.subplots(nrows=2, ncols=2)
-ax = ax.flatten()
+    fig, ax = plt.subplots(nrows=2, ncols=2)
+    ax = ax.flatten()
 
-for i, p in enumerate([1, 1.000001, 1.5, 2.0]):
-    t0 = time.time()
-    if p == 1:
-        x = solve_l1(A, b)
-    else:
-        x = solve_lp(A, b, p)
-    t1 = time.time()
-    print(f"L^{p} time: {t1 - t0}")
-    print(f"\tconstraints: {np.max(np.abs(A @ x - b))}")
-    print(f"\tL^p norm: {norm_p(x, p)}")
-    draw_hist(ax[i], x, f"L^{p} norm")
+    for i, p in enumerate([1, 1.000001, 1.5, 2.0]):
+        t0 = time.time()
+        if p == 1:
+            x = solve_l1(A, b)
+        else:
+            x = solve_lp(A, b, p)
+        t1 = time.time()
+        print(f"L^{p} time: {t1 - t0}")
+        print(f"\tconstraints: {np.max(np.abs(A @ x - b))}")
+        print(f"\tL^p norm: {norm_p(x, p)}")
+        draw_hist(ax[i], x, f"L^{p} norm")
 
-plt.tight_layout()
-plt.show()
+    plt.tight_layout()
+    plt.show()
