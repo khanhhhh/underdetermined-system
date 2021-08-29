@@ -16,16 +16,16 @@ def mat_stack(mat: list[list[np.ndarray]]) -> np.ndarray:
     return out
 
 
-def reconstruct(measure_signal: np.ndarray, sensing_matrix: np.ndarray,
+def reconstruct(measure_signal: np.ndarray, measure_matrix: np.ndarray,
                 inverse_fourier_matrix: np.ndarray) -> np.ndarray:
     """
     reconstruct
     :param measure_signal:
-    :param sensing_matrix:
+    :param measure_matrix:
     :param inverse_fourier_matrix:
     :return: reconstruct signal
     """
-    A = sensing_matrix @ inverse_fourier_matrix
+    A = measure_matrix @ inverse_fourier_matrix
     n, m = A.shape
     F = mat_stack([
         [np.real(A), -np.imag(A)],

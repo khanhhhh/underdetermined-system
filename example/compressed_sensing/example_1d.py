@@ -3,9 +3,9 @@ from typing import Callable
 import numpy as np
 from matplotlib import pyplot as plt
 
-from example.compressive_sensing import discrete_fourier_1d
-from example.compressive_sensing.compressive_sensing import reconstruct
-from example.compressive_sensing.sensing import create_sensing_matrix
+from example.compressed_sensing import discrete_fourier_1d
+from example.compressed_sensing.compressed_sensing import reconstruct
+from example.compressed_sensing.measure import create_measure_matrix
 
 np.random.seed(1234)
 
@@ -31,6 +31,7 @@ def plot_signal(*args: np.ndarray):
         plt.plot(t[argsort], f[argsort], linewidth=1, marker="o", markersize=3)
     plt.show()
 
+
 if __name__ == "__main__":
     sampling_rate = 0.05
     t = np.arange(-3, +3, sampling_rate)
@@ -46,12 +47,12 @@ if __name__ == "__main__":
     inverse = discrete_fourier_1d.backward(K, N)
 
     D = int(0.3 * N)  # 30% of signal
-    sensing_matrix = create_sensing_matrix(D, N)
-    measure_signal = sensing_matrix @ true_signal
-    measure_t = sensing_matrix @ t
+    measure_matrix = create_measure_matrix(D, N)
+    measure_signal = measure_matrix @ true_signal
+    measure_t = measure_matrix @ t
     plot_signal(t, true_signal, measure_t, measure_signal)
 
-    reconstruct_signal = reconstruct(measure_signal=measure_signal, sensing_matrix=sensing_matrix,
+    reconstruct_signal = reconstruct(measure_signal=measure_signal, measure_matrix=measure_matrix,
                                      inverse_fourier_matrix=inverse)
     print("max diff: ", np.max(np.abs(reconstruct_signal)))
 

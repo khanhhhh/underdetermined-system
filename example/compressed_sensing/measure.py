@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def create_sensing_matrix(D: int, N: int) -> np.ndarray:
+def create_measure_matrix(D: int, N: int) -> np.ndarray:
     """
     create_sensing_matrix
     :param D: number of measure signal data points
