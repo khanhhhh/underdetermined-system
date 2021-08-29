@@ -46,6 +46,4 @@ Claim 2:
 
 ## results
 
-![norm](https://raw.githubusercontent.com/khanh-nguyen-code/suls/main/assets/norm.png)
-
 ![example_2d](https://raw.githubusercontent.com/khanh-nguyen-code/suls/main/assets/example_2d.png)

@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
     draw(measure_matrix.T @ measure_signal, "measure signal")
 
-    reconstruct_signal = reconstruct(measure_signal, measure_matrix, discrete_fourier_2d.backward(height, width, height, width))
+    reconstruct_signal = reconstruct(measure_signal, measure_matrix, discrete_fourier_2d.backward(2*height, 2*width, height, width))
 
     draw(reconstruct_signal, "reconstruct signal")
 
