@@ -56,7 +56,7 @@ def solve_l1(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     for i in range(m):
         model.addConstraint(pulp.lpSum(a[i, :] * x) == b[i])
     model.setObjective(pulp.lpSum(y))
-    status = model.solve()
+    status = model.solve(pulp.COIN_CMD(msg=False, options=["barrier"]))
 
     if status != pulp.LpStatusOptimal:
         raise RuntimeError(status)
