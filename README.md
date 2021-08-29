@@ -43,3 +43,9 @@ Claim 2:
     Problem 3 can be formulated as a linear program with a variable u = [x, y] \in R^{2n}
 ------------------------------------------------
 ```
+
+## results
+
+![norm](https://raw.githubusercontent.com/khanh-nguyen-code/suls/main/assets/norm.png)
+
+![example_2d](https://raw.githubusercontent.com/khanh-nguyen-code/suls/main/assets/example_2d.png)
