@@ -59,12 +59,11 @@ def solve_l1(a: np.ndarray, b: np.ndarray) -> np.ndarray:
         model.addConstraint(pulp.LpAffineExpression({x[j]: a[i, j] for j in range(n)}) == b[i])
     model.setObjective(pulp.lpSum(y))
     t2 = time.time()
+    print(f"model building... {t2-t1}s")
     status = model.solve(pulp.COIN_CMD(msg=False, options=["barrier"]))
     t3 = time.time()
+    print(f"model solving.... {t3-t2}s")
     if status != pulp.LpStatusOptimal:
         raise RuntimeError(status)
-
-    print(f"model building... {t2-t1}s")
-    print(f"model solving.... {t3-t2}s")
 
     return np.array([v.value() for v in x])
