@@ -49,7 +49,7 @@ Claim 2:
 ### reconstruct from a fraction of pixels
 
 ```
-find sparsest solution in fourier basis
+find sparsest solution in fourier basis and laplacian basis
 ```
 
 - 30%
