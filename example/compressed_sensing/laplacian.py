@@ -31,7 +31,7 @@ def basis(adj: sp.sparse.spmatrix, d: Optional[int] = None) -> Tuple[np.ndarray,
 
 def create_grid_adj_matrix(grid_h: int, grid_w: int) -> sp.sparse.coo_matrix:
     """
-    :return: adjacency of the grid graph, clustering of that grid graph w.r.t kernel size
+    :return: adjacency of the grid graph
     """
     coord_list = []
     for h in range(grid_h):
