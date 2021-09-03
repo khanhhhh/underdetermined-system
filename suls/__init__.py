@@ -1,8 +1,6 @@
-import os
 import time
 
 import numpy as np
-import pulp
 import cvxpy as cp
 
 
@@ -16,20 +14,20 @@ def check_arguments(a: np.ndarray, b: np.ndarray):
         raise Exception("System must be under-determined (m < n)")
 
 
-def solve_lp(a: np.ndarray, b: np.ndarray, p: int = 1) -> np.ndarray:
+def solve_lp(A: np.ndarray, b: np.ndarray, p: int = 1) -> np.ndarray:
     """
     Minimizer of ||x||_p^p
     Given Ax=b
     By minimizing ||Ax-b||_2^2 + ||x||_p^p
     """
 
-    check_arguments(a, b)
-    m, n = a.shape
+    check_arguments(A, b)
+    m, n = A.shape
 
     t1 = time.time()
     x = cp.Variable(shape=(n,))
-    objective = cp.Minimize(cp.sum_squares(a @ x - b) + cp.norm(x, p))
-    problem = cp.Problem(objective)
+    objective = cp.Minimize(cp.sum_squares(A @ x - b) + cp.norm(x, p))
+    problem = cp.Problem(objective=objective)
     t2 = time.time()
     print(f"model building... {t2 - t1}s")
     problem.solve()
@@ -38,7 +36,7 @@ def solve_lp(a: np.ndarray, b: np.ndarray, p: int = 1) -> np.ndarray:
     return x.value
 
 
-def solve_l1(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+def solve_l1(A: np.ndarray, b: np.ndarray) -> np.ndarray:
     """
     Minimizer of ||x||_1
     Given Ax=b
@@ -47,26 +45,24 @@ def solve_l1(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     Minimize 1^T y (sum of all elements of y)
     Given y >= |x| and Ax=b
     """
-    check_arguments(a, b)
-    m, n = a.shape
+    check_arguments(A, b)
+    m, n = A.shape
     t1 = time.time()
-    model = pulp.LpProblem(name="", sense=pulp.LpMinimize)
-    x = np.array([pulp.LpVariable(name=f"x_{j}", cat=pulp.LpContinuous) for j in range(n)])
-    y = np.array([pulp.LpVariable(name=f"y_{j}", cat=pulp.LpContinuous) for j in range(n)])
-    for j in range(n):
-        model.addConstraint(y[j] >= x[j])
-        model.addConstraint(y[j] >= -x[j])
-    for i in range(m):
-        model.addConstraint(pulp.LpAffineExpression({x[j]: a[i, j] for j in range(n)}) == b[i])
-    model.setObjective(pulp.lpSum(y))
+    x = cp.Variable(shape=(n,))
+    y = cp.Variable(shape=(n,))
+    problem = cp.Problem(
+        objective=cp.Minimize(cp.sum(y)),
+        constraints=[
+            y >= x,
+            y >= -x,
+            A @ x == b,
+        ]
+    )
     t2 = time.time()
     print(f"model building... {t2 - t1}s")
-    status = model.solve(pulp.COIN_CMD(msg=False, mip=False, threads=os.cpu_count(), options=["barrier"]))
+    problem.solve()
     t3 = time.time()
     print(f"model solving.... {t3 - t2}s")
-    if status != pulp.LpStatusOptimal:
-        raise RuntimeError(status)
-
-    return np.array([v.value() for v in x])
+    return x.value
 
 

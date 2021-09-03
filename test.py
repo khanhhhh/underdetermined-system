@@ -3,7 +3,7 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 
-from suls import solve_lp
+from suls import solve_lp, solve_l1
 
 np.random.seed(1234)
 
@@ -27,19 +27,31 @@ if __name__ == "__main__":
     n = 2000
     m = 400
     A = np.random.random(size=(m, n)).astype(dtype=np.float64)
-    b = np.random.random(size=(m)).astype(dtype=np.float64)
+    b = np.random.random(size=(m, )).astype(dtype=np.float64)
 
-    fig, ax = plt.subplots(nrows=2, ncols=1)
+    fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(12, 4))
     ax = ax.flatten()
 
-    for i, p in enumerate([1, 2]):
+    ax_i = 0
+
+    t0 = time.time()
+    x = solve_l1(A, b)
+    t1 = time.time()
+    print(f"L^{1} time: {t1 - t0}")
+    print(f"\tconstraints: {np.max(np.abs(A @ x - b))}")
+    print(f"\tL^p norm: {norm_p(x, 1)}")
+    draw_hist(ax[ax_i], x, f"L^{1} norm")
+    ax_i += 1
+
+    for p in [1, 2]:
         t0 = time.time()
         x = solve_lp(A, b, p)
         t1 = time.time()
         print(f"L^{p} time: {t1 - t0}")
         print(f"\tconstraints: {np.max(np.abs(A @ x - b))}")
         print(f"\tL^p norm: {norm_p(x, p)}")
-        draw_hist(ax[i], x, f"L^{p} norm")
+        draw_hist(ax[ax_i], x, f"L^{p} norm")
+        ax_i += 1
 
     plt.tight_layout()
     plt.show()
