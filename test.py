@@ -3,7 +3,7 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 
-from suls import solve_lp, solve_l1
+from suls import solve_lp
 
 np.random.seed(1234)
 
@@ -29,15 +29,12 @@ if __name__ == "__main__":
     A = np.random.random(size=(m, n)).astype(dtype=np.float64)
     b = np.random.random(size=(m)).astype(dtype=np.float64)
 
-    fig, ax = plt.subplots(nrows=2, ncols=2)
+    fig, ax = plt.subplots(nrows=2, ncols=1)
     ax = ax.flatten()
 
-    for i, p in enumerate([1, 1.000001, 1.5, 2.0]):
+    for i, p in enumerate([1, 2]):
         t0 = time.time()
-        if p == 1:
-            x = solve_l1(A, b)
-        else:
-            x = solve_lp(A, b, p)
+        x = solve_lp(A, b, p)
         t1 = time.time()
         print(f"L^{p} time: {t1 - t0}")
         print(f"\tconstraints: {np.max(np.abs(A @ x - b))}")
