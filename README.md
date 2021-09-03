@@ -54,13 +54,13 @@ find sparsest solution in fourier basis and laplacian basis
 
 - 30%
 
-![example_2d](https://raw.githubusercontent.com/khanh-nguyen-code/suls/main/assets/example_2d_0_3.png)
+![example_2d](https://raw.githubusercontent.com/khanh-nguyen-code/suls/master/assets/example_2d_0_3.png)
 
 - 50%
 
-![example_2d](https://raw.githubusercontent.com/khanh-nguyen-code/suls/main/assets/example_2d_0_5.png)
+![example_2d](https://raw.githubusercontent.com/khanh-nguyen-code/suls/master/assets/example_2d_0_5.png)
 
 - 80%
 
-![example_2d](https://raw.githubusercontent.com/khanh-nguyen-code/suls/main/assets/example_2d_0_8.png)
+![example_2d](https://raw.githubusercontent.com/khanh-nguyen-code/suls/master/assets/example_2d_0_8.png)
 
