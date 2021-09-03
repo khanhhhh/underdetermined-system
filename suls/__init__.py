@@ -68,3 +68,5 @@ def solve_l1(a: np.ndarray, b: np.ndarray) -> np.ndarray:
         raise RuntimeError(status)
 
     return np.array([v.value() for v in x])
+
+

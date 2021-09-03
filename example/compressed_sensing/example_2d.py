@@ -4,7 +4,8 @@ import numpy as np
 from PIL import Image
 from matplotlib import pyplot as plt
 import multiprocessing as mp
-from example.compressed_sensing import fourier_2d, laplacian, compressed_sensing, measure
+from example.compressed_sensing import compressed_sensing, measure, basis
+from example.compressed_sensing.basis.laplacian import create_grid_adj_matrix
 
 if __name__ == "__main__":
     fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(16.0, 4.0))
@@ -58,11 +59,10 @@ if __name__ == "__main__":
     measure_im = sig2im(measure_matrix.T @ measure_signal)
     draw_im(measure_im, "measure signal")
 
-
     # reconstruct true im
     pool = mp.Pool()
 
-    _, inverse_fourier_matrix = fourier_2d.basis(height, width, height, width)
+    _, inverse_fourier_matrix = basis.fourier_2d(height, width, height, width)
     result_fourier = []
     for c in range(channel):
         result_fourier.append(pool.apply_async(
@@ -70,8 +70,8 @@ if __name__ == "__main__":
             args=(measure_signal[:, c], measure_matrix, inverse_fourier_matrix),
         ))
 
-    adj = laplacian.create_grid_adj_matrix(height, width)
-    _, inverse_laplacian_matrix = laplacian.basis(adj)
+    adj = create_grid_adj_matrix(height, width)
+    _, inverse_laplacian_matrix = basis.laplacian(adj)
     result_laplacian = []
     for c in range(channel):
         result_laplacian.append(pool.apply_async(
