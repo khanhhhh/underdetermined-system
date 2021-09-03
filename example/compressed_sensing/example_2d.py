@@ -1,3 +1,5 @@
+from typing import Optional
+
 import numpy as np
 from PIL import Image
 from matplotlib import pyplot as plt
@@ -12,12 +14,10 @@ if __name__ == "__main__":
     height, width, channel = 0, 0, 0
 
 
-    def open_im(filename: str, num_pixels: int) -> np.ndarray:
+    def open_im(filename: str, height: Optional[int] = None, width: Optional[int] = None) -> np.ndarray:
         im = Image.open(filename).convert("RGB")
-        h, w = im.size
-        scale = np.sqrt(num_pixels / (h * w))
-        if scale < 1:
-            im.thumbnail(size=(int(w * scale), int(h * scale)), resample=Image.ANTIALIAS)
+        if height is not None and width is not None:
+            im.thumbnail(size=(width, height), resample=Image.ANTIALIAS)
         im = np.array(im)
         return im
 
@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
 
     # open true im
-    true_im = open_im(filename="example_2d.png", num_pixels=1000)
+    true_im = open_im(filename="example_2d.png", height=32, width=32)
     draw_im(true_im, "true signal")
     height, width, channel = true_im.shape
     true_signal = im2sig(true_im)
