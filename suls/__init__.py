@@ -3,8 +3,6 @@ import time
 
 import numpy as np
 import pulp
-import scipy as sp
-import scipy.optimize
 import cvxpy as cp
 
 
@@ -18,31 +16,7 @@ def check_arguments(a: np.ndarray, b: np.ndarray):
         raise Exception("System must be under-determined (m < n)")
 
 
-def solve_lp(a: np.ndarray, b: np.ndarray, p: float = 1.0) -> np.ndarray:
-    """
-    Minimizer of ||x||_p^p
-    Given Ax=b
-    By minimizing ||Ax-b||_2^2 + ||x||_p^p
-    """
-
-    check_arguments(a, b)
-    m, n = a.shape
-
-    def objective(x: np.ndarray) -> np.ndarray:
-        return np.sum((a @ x - b) ** 2) + np.sum(np.abs(x) ** p)
-
-    def gradient(x: np.ndarray) -> np.ndarray:
-        return 2 * a.T @ (a @ x - b) + p * np.sign(x) * np.abs(x) ** (p - 1)
-
-    x0 = np.zeros(shape=(n,))
-    t2 = time.time()
-    solution = sp.optimize.minimize(objective, x0, method="L-BFGS-B", jac=gradient)
-    t3 = time.time()
-    print(f"model solving.... {t3 - t2}s")
-    return solution.x
-
-
-def solve_lp_cvxpy(a: np.ndarray, b: np.ndarray, p: int = 1) -> np.ndarray:
+def solve_lp(a: np.ndarray, b: np.ndarray, p: int = 1) -> np.ndarray:
     """
     Minimizer of ||x||_p^p
     Given Ax=b

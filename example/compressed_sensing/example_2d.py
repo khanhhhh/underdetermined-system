@@ -46,7 +46,7 @@ if __name__ == "__main__":
         return im
 
     # open true im
-    true_im = open_im(filename="example_2d.png", num_pixels=10000)
+    true_im = open_im(filename="example_2d.png", num_pixels=2000)
     draw_im(true_im, "true signal")
     height, width, channel = true_im.shape
     true_signal = im2sig(true_im)
@@ -58,8 +58,6 @@ if __name__ == "__main__":
     measure_signal = measure_matrix @ true_signal
     measure_im = sig2im(measure_matrix.T @ measure_signal)
     draw_im(measure_im, "measure signal")
-
-    plt.show()
 
     # reconstruct true im
     reconstruct_signal = np.empty(shape=(height * width, channel), dtype=np.complex128)
