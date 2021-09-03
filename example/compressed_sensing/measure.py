@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def create_measure_matrix(d: int, n: int) -> np.ndarray:
+def create_random_matrix(d: int, n: int) -> np.ndarray:
     """
     create_measure_matrix
     :param d: number of measure signal data points

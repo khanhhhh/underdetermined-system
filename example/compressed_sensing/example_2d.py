@@ -2,8 +2,7 @@ import numpy as np
 from PIL import Image
 from matplotlib import pyplot as plt
 
-from example.compressed_sensing import fourier_2d, laplacian, compressed_sensing
-from example.compressed_sensing.measure import create_measure_matrix
+from example.compressed_sensing import fourier_2d, laplacian, compressed_sensing, measure
 
 if __name__ == "__main__":
     fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(16.0, 4.0))
@@ -53,7 +52,7 @@ if __name__ == "__main__":
     # create measure im
     N = len(true_signal)
     D = int(0.5 * N)
-    measure_matrix = create_measure_matrix(D, N)
+    measure_matrix = measure.create_random_matrix(D, N)
     measure_signal = measure_matrix @ true_signal
     measure_im = sig2im(measure_matrix.T @ measure_signal)
     draw_im(measure_im, "measure signal")
