@@ -1,32 +1,33 @@
 import time
+from typing import Tuple
 
 import numpy as np
 import cvxpy as cp
 
 
-def check_arguments(a: np.ndarray, b: np.ndarray):
-    if len(a.shape) != 2 or len(b.shape) != 1:
-        raise Exception("A must be 2D, b must be 1D")
+def assert_arguments(A: np.ndarray, b: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    assert len(A.shape) == 2, "A must be matrix"
+    assert len(b.shape) == 1, "b must be vector"
+    assert A.shape[0] == b.shape[0], "A rows must equal b dims"
+    assert A.shape[0] < A.shape[1], "A must be fat, under determined"
+    assert (~np.isreal(A)).sum() == 0, "A must be real"
+    assert (~np.isreal(b)).sum() == 0, "b must be real"
+    return A.astype(np.float64), b.astype(np.float64)
 
-    m, n = a.shape
 
-    if not (m < n):
-        raise Exception("System must be under-determined (m < n)")
-
-
-def solve_lp(A: np.ndarray, b: np.ndarray, p: int = 1) -> np.ndarray:
+def solve_lp(A: np.ndarray, b: np.ndarray, p: int = 1, a: float = 1) -> np.ndarray:
     """
-    Minimizer of ||x||_p^p
+    Minimizer of ||x||_p
     Given Ax=b
-    By minimizing ||Ax-b||_2^2 + ||x||_p^p
+    By minimizing ||Ax-b||_2^2 + a||x||_p
     """
 
-    check_arguments(A, b)
+    A, b = assert_arguments(A, b)
     m, n = A.shape
 
     t1 = time.time()
     x = cp.Variable(shape=(n,))
-    objective = cp.Minimize(cp.sum_squares(A @ x - b) + cp.norm(x, p))
+    objective = cp.Minimize(cp.sum_squares(A @ x - b) + a * cp.norm(x, p))
     problem = cp.Problem(objective=objective)
     t2 = time.time()
     print(f"model building... {t2 - t1}s")
@@ -45,7 +46,7 @@ def solve_l1(A: np.ndarray, b: np.ndarray) -> np.ndarray:
     Minimize 1^T y (sum of all elements of y)
     Given y >= |x| and Ax=b
     """
-    check_arguments(A, b)
+    A, b = assert_arguments(A, b)
     m, n = A.shape
     t1 = time.time()
     x = cp.Variable(shape=(n,))
@@ -64,5 +65,3 @@ def solve_l1(A: np.ndarray, b: np.ndarray) -> np.ndarray:
     t3 = time.time()
     print(f"model solving.... {t3 - t2}s")
     return x.value
-
-

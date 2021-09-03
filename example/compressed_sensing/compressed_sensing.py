@@ -28,6 +28,10 @@ def reconstruct_real(
     :param inverse_transform_matrix:
     :return: reconstruct signal
     """
+    measure_signal = measure_signal.astype(np.float64)
+    measure_matrix = measure_matrix.astype(np.float64)
+    inverse_transform_matrix = inverse_transform_matrix.astype(np.float64)
+    #
     A = measure_matrix @ inverse_transform_matrix
     y = suls.solve_lp(A, measure_signal)
     reconstruct_signal = inverse_transform_matrix @ y
@@ -37,29 +41,33 @@ def reconstruct_real(
 def reconstruct_complex(
         measure_signal: np.ndarray,
         measure_matrix: np.ndarray,
-        inverse_fourier_matrix: np.ndarray,
+        inverse_transform_matrix: np.ndarray,
 ) -> np.ndarray:
     """
     reconstruct_complex
     :param measure_signal:
     :param measure_matrix:
-    :param inverse_fourier_matrix:
+    :param inverse_transform_matrix:
     :return: reconstruct signal
     """
-    A = measure_matrix @ inverse_fourier_matrix
+    measure_signal = measure_signal.astype(np.complex128)
+    measure_matrix = measure_matrix.astype(np.complex128)
+    inverse_transform_matrix = inverse_transform_matrix.astype(np.complex128)
+    #
+    A = measure_matrix @ inverse_transform_matrix
     n, m = A.shape
     F = mat_stack([
         [np.real(A), -np.imag(A)],
         [np.imag(A), np.real(A)],
     ]).astype(np.float64)
     x = mat_stack([
-        [measure_signal],
-        [np.zeros(shape=(n,), dtype=np.float64)],
+        [measure_signal.real],
+        [measure_signal.imag],
     ]).flatten()
     y = suls.solve_lp(F, x)
     f = np.empty(shape=(m,), dtype=np.complex128)
 
     for i in range(m):
         f[i] = complex(y[i], y[i + m])
-    reconstruct_signal = inverse_fourier_matrix @ f
+    reconstruct_signal = inverse_transform_matrix @ f
     return reconstruct_signal
