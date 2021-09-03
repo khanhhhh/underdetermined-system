@@ -58,21 +58,21 @@ if __name__ == "__main__":
     measure_im = sig2im(measure_matrix.T @ measure_signal)
     draw_im(measure_im, "measure signal")
 
-    # ##
-    pool = mp.Pool()
 
     # reconstruct true im
-    _, inverse_fourier_matrix = fourier_2d.basis(height, width, height, width)
-    adj = laplacian.create_grid_adj_matrix(height, width)
-    _, inverse_laplacian_matrix = laplacian.basis(adj)
+    pool = mp.Pool()
 
+    _, inverse_fourier_matrix = fourier_2d.basis(height, width, height, width)
     result_fourier = []
-    result_laplacian = []
     for c in range(channel):
         result_fourier.append(pool.apply_async(
             func=compressed_sensing.reconstruct_complex,
             args=(measure_signal[:, c], measure_matrix, inverse_fourier_matrix),
         ))
+
+    adj = laplacian.create_grid_adj_matrix(height, width)
+    _, inverse_laplacian_matrix = laplacian.basis(adj)
+    result_laplacian = []
     for c in range(channel):
         result_laplacian.append(pool.apply_async(
             func=compressed_sensing.reconstruct_real,
