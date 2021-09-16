@@ -71,7 +71,8 @@ if __name__ == "__main__":
     pool = mp.Pool()
     while True:
         # measure
-        m = np.random.normal(loc=0, scale=1, size=(height * width)).astype(np.float64)
+        # m = np.random.normal(loc=0, scale=1, size=(height * width)).astype(np.float64)
+        m = np.random.randint(low=0, high=2, size=(height*width)).astype(np.float64)
         b = m @ true_signal
         A_list.append(m)
         b_list.append(b)
