@@ -107,21 +107,6 @@ def open_im(filename: str, height: Optional[int] = None, width: Optional[int] = 
     return im
 
 
-def im2sig(im: np.ndarray) -> np.ndarray:
-    signal = im.reshape((height * width, channel))
-    return signal
-
-
-def sig2im(signal: np.ndarray) -> np.ndarray:
-    signal = signal.real.astype(np.float64)  # take real part
-    signal += 0.5
-    signal[signal < 0] = 0
-    signal[signal > 255] = 255
-    signal = signal.astype(np.uint8)
-    im = signal.reshape((height, width, channel))
-    return im
-
-
 if __name__ == "__main__":
     fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(16.0, 4.0))
     ax = ax.flatten()
@@ -135,6 +120,21 @@ if __name__ == "__main__":
         ax[ax_index].imshow(im)
         ax[ax_index].set_title(title)
         ax_index += 1
+
+
+    def im2sig(im: np.ndarray) -> np.ndarray:
+        signal = im.reshape((height * width, channel))
+        return signal
+
+
+    def sig2im(signal: np.ndarray) -> np.ndarray:
+        signal = signal.real.astype(np.float64)  # take real part
+        signal += 0.5
+        signal[signal < 0] = 0
+        signal[signal > 255] = 255
+        signal = signal.astype(np.uint8)
+        im = signal.reshape((height, width, channel))
+        return im
 
 
     # open true im
