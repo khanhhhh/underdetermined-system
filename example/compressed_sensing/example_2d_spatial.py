@@ -1,9 +1,10 @@
 from typing import Optional
 
-import multiprocessing as mp
+import multiprocess as mp
 import numpy as np
 from PIL import Image
 from matplotlib import pyplot as plt
+from multiprocess.pool import Pool
 
 import suls
 
@@ -27,10 +28,6 @@ def open_im(filename: str, height: Optional[int] = None, width: Optional[int] = 
         im.thumbnail(size=(width, height), resample=Image.ANTIALIAS)
     im = np.array(im)
     return im
-
-
-def solve_lp_helper(args):
-    return suls.solve_lp(*args)
 
 
 if __name__ == "__main__":
@@ -68,10 +65,9 @@ if __name__ == "__main__":
     A_list = []
     b_list = []
 
-    pool = mp.Pool()
+    pool = Pool()
     while True:
         # measure
-        # m = np.random.normal(loc=0, scale=1, size=(height * width)).astype(np.float64)
         m = np.random.randint(low=0, high=2, size=(height*width)).astype(np.float64)
         b = m @ true_signal
         A_list.append(m)
@@ -79,8 +75,8 @@ if __name__ == "__main__":
         if len(b_list) % 100 == 0:
             # reconstruct
             reconstruct_signal = pool.map(
-                solve_lp_helper,
-                [(np.array(A_list), np.array(b_list)[:, i]) for i in range(channel)],
+                func=lambda args: suls.solve_lp(*args),
+                iterable=[(np.array(A_list), np.array(b_list)[:, i]) for i in range(channel)],
             )
             reconstruct_signal = np.array(reconstruct_signal).T
             reconstruct_im = sig2im(reconstruct_signal)

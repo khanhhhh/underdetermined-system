@@ -1,9 +1,9 @@
-import multiprocessing as mp
 from typing import Optional
 
 import numpy as np
 from PIL import Image
 from matplotlib import pyplot as plt
+from multiprocess.pool import Pool
 
 import suls
 from example.compressed_sensing import basis
@@ -152,7 +152,7 @@ if __name__ == "__main__":
     draw_im(measure_im, "measure signal")
 
     # reconstruct true im
-    pool = mp.Pool()
+    pool = Pool()
 
     _, inverse_fourier_matrix = basis.fourier_2d(height, width, height, width)
     result_fourier = []
